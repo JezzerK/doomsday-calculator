@@ -1,2 +1,2 @@
 # doomsday-calculator
-A program that runs Conway's Doomsday algorithm and quizzes you on days.
+A program quizzes you on what day it was within bounds you specify. Built so I can master Conway's Doomsday algorithm.
