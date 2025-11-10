@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doomsday Calculator Quiz</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #0a0a0a;
+            color: #00ff41;
+        }
+        .container {
+            background-color: #0a0a0a;
+            padding: 30px;
+            border: 2px solid #00ff41;
+            border-radius: 0;
+        }
+        h1 {
+            color: #00ff41;
+            text-align: center;
+            font-weight: bold;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #00ff41;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #00ff41;
+            border-radius: 0;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0a0a0a;
+            color: #00ff41;
+            border: 2px solid #00ff41;
+            border-radius: 0;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        button:hover {
+            background-color: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 15px #00ff41;
+        }
+        button:disabled {
+            background-color: #0a0a0a;
+            color: #004d1a;
+            border-color: #004d1a;
+            cursor: not-allowed;
+        }
+        .quiz-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #0a0a0a;
+            border: none;
+            border-radius: 0;
+            display: none;
+        }
+        .quiz-section.active {
+            display: block;
+        }
+        .date-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff41;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 10px #00ff41;
+            padding: 15px;
+            border: 2px solid #00ff41;
+        }
+        .day-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .day-button {
+            padding: 15px;
+            background-color: #0a0a0a;
+            color: #00ff41;
+            border: 2px solid #00ff41;
+            border-radius: 0;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        .day-button:hover {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            box-shadow: 0 0 20px #00ff41;
+            border-color: #00ff41;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #00ff41;
+            border-radius: 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #0a0a0a;
+        }
+        .result.correct {
+            color: #00ff41;
+            border-color: #00ff41;
+            box-shadow: 0 0 15px #00ff41;
+        }
+        .result.incorrect {
+            color: #00ff41;
+            border-color: #00ff41;
+        }
+        .new-question-btn {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            border: 2px solid #00ff41;
+            margin-top: 10px;
+        }
+        .new-question-btn:hover {
+            background-color: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 15px #00ff41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doomsday Calculator Quiz</h1>
+        
+        <div id="setup-section">
+            <div class="input-group">
+                <label for="lower-bound">Lower Bound Year:</label>
+                <input type="number" id="lower-bound" placeholder="e.g., 1700" min="1">
+            </div>
+            <div class="input-group">
+                <label for="upper-bound">Upper Bound Year:</label>
+                <input type="number" id="upper-bound" placeholder="e.g., 2099" min="1">
+            </div>
+            <button id="start-quiz-btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <div id="quiz-section" class="quiz-section">
+            <div class="date-display" id="date-display"></div>
+            <p style="text-align: center; color: #00ff41;">What day of the week is this date?</p>
+            <div class="day-buttons">
+                <button class="day-button" onclick="checkAnswer('Sunday')">Sunday</button>
+                <button class="day-button" onclick="checkAnswer('Monday')">Monday</button>
+                <button class="day-button" onclick="checkAnswer('Tuesday')">Tuesday</button>
+                <button class="day-button" onclick="checkAnswer('Wednesday')">Wednesday</button>
+                <button class="day-button" onclick="checkAnswer('Thursday')">Thursday</button>
+                <button class="day-button" onclick="checkAnswer('Friday')">Friday</button>
+                <button class="day-button" onclick="checkAnswer('Saturday')">Saturday</button>
+            </div>
+            <div id="result"></div>
+            <button class="new-question-btn" onclick="generateNewQuestion()" style="display: none;" id="new-question-btn">New Question</button>
+        </div>
+    </div>
+
+    <script>
+        let lowerBound = null;
+        let upperBound = null;
+        let currentDate = null;
+        let correctDay = null;
+
+        function startQuiz() {
+            lowerBound = parseInt(document.getElementById('lower-bound').value);
+            upperBound = parseInt(document.getElementById('upper-bound').value);
+
+            if (!lowerBound || !upperBound) {
+                alert('Please enter both lower and upper bounds');
+                return;
+            }
+
+            if (lowerBound >= upperBound) {
+                alert('Lower bound must be less than upper bound');
+                return;
+            }
+
+            document.getElementById('setup-section').style.display = 'none';
+            document.getElementById('quiz-section').classList.add('active');
+            
+            generateNewQuestion();
+        }
+
+        function generateNewQuestion() {
+            // Generate random year, month, and day
+            const year = Math.floor(Math.random() * (upperBound - lowerBound + 1)) + lowerBound;
+            const month = Math.floor(Math.random() * 12) + 1;
+            
+            // Get the last day of the month
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const day = Math.floor(Math.random() * daysInMonth) + 1;
+
+            currentDate = new Date(year, month - 1, day);
+            correctDay = getDayName(currentDate.getDay());
+
+            // Format date for display
+            const dateStr = currentDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('date-display').textContent = dateStr;
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('result').className = '';
+            document.getElementById('new-question-btn').style.display = 'none';
+            
+            // Re-enable all buttons and reset colors
+            document.querySelectorAll('.day-button').forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.backgroundColor = '#0a0a0a';
+                btn.style.color = '#00ff41';
+                btn.style.borderColor = '#00ff41';
+                btn.style.boxShadow = 'none';
+            });
+        }
+
+        function getDayName(dayIndex) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[dayIndex];
+        }
+
+        function checkAnswer(selectedDay) {
+            const resultDiv = document.getElementById('result');
+            const buttons = document.querySelectorAll('.day-button');
+            
+            // Disable all buttons
+            buttons.forEach(btn => {
+                btn.disabled = true;
+            });
+
+            if (selectedDay === correctDay) {
+                resultDiv.textContent = 'Correct! ✓';
+                resultDiv.className = 'result correct';
+            } else {
+                resultDiv.textContent = `Incorrect. The correct answer is ${correctDay}.`;
+                resultDiv.className = 'result incorrect';
+            }
+
+            // Highlight the correct answer
+            buttons.forEach(btn => {
+                if (btn.textContent === correctDay) {
+                    btn.style.backgroundColor = '#00ff41';
+                    btn.style.color = '#0a0a0a';
+                    btn.style.boxShadow = '0 0 15px #00ff41';
+                } else if (btn.textContent === selectedDay && selectedDay !== correctDay) {
+                    btn.style.backgroundColor = '#0a0a0a';
+                    btn.style.borderColor = '#004d1a';
+                    btn.style.color = '#004d1a';
+                    btn.style.opacity = '0.7';
+                } else {
+                    btn.style.opacity = '0.3';
+                    btn.style.borderColor = '#004d1a';
+                }
+            });
+
+            document.getElementById('new-question-btn').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
