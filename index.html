@@ -23,6 +23,7 @@
             color: #00ff41;
             text-align: center;
             font-weight: bold;
+            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
         }
         .input-group {
             margin: 20px 0;
@@ -46,7 +47,6 @@
         }
         input:focus {
             outline: none;
-            box-shadow: 0 0 10px #00ff41;
         }
         button {
             width: 100%;
@@ -63,7 +63,6 @@
         button:hover {
             background-color: #00ff41;
             color: #0a0a0a;
-            box-shadow: 0 0 15px #00ff41;
         }
         button:disabled {
             background-color: #0a0a0a;
@@ -88,7 +87,6 @@
             color: #00ff41;
             text-align: center;
             margin: 20px 0;
-            text-shadow: 0 0 10px #00ff41;
             padding: 15px;
             border: 2px solid #00ff41;
         }
@@ -111,7 +109,6 @@
         .day-button:hover {
             background-color: #0a0a0a;
             color: #00ff41;
-            box-shadow: 0 0 20px #00ff41;
             border-color: #00ff41;
         }
         .result {
@@ -127,7 +124,6 @@
         .result.correct {
             color: #00ff41;
             border-color: #00ff41;
-            box-shadow: 0 0 15px #00ff41;
         }
         .result.incorrect {
             color: #00ff41;
@@ -142,7 +138,6 @@
         .new-question-btn:hover {
             background-color: #00ff41;
             color: #0a0a0a;
-            box-shadow: 0 0 15px #00ff41;
         }
         .quiz-type-btn {
             margin: 10px 0;
@@ -156,7 +151,6 @@
         .back-btn:hover {
             background-color: #00ff41;
             color: #0a0a0a;
-            box-shadow: 0 0 15px #00ff41;
         }
     </style>
 </head>
@@ -354,7 +348,6 @@
                 if (btn.textContent === correctDay) {
                     btn.style.backgroundColor = '#00ff41';
                     btn.style.color = '#0a0a0a';
-                    btn.style.boxShadow = '0 0 15px #00ff41';
                 } else if (btn.textContent === selectedDay && selectedDay !== correctDay) {
                     btn.style.backgroundColor = '#0a0a0a';
                     btn.style.borderColor = '#004d1a';
@@ -392,7 +385,6 @@
                 if (btnValue === correctYearPoint) {
                     btn.style.backgroundColor = '#00ff41';
                     btn.style.color = '#0a0a0a';
-                    btn.style.boxShadow = '0 0 15px #00ff41';
                 } else if (btnValue === selectedPoint && selectedPoint !== correctYearPoint) {
                     btn.style.backgroundColor = '#0a0a0a';
                     btn.style.borderColor = '#004d1a';
